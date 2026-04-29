@@ -1,5 +1,4 @@
 use clap::{Parser, Subcommand};
-
 mod commands;
 
 #[derive(Parser)]
@@ -26,6 +25,17 @@ enum Commands {
         #[arg(long)] tx: String,
         #[arg(long)] rpc: String,
     },
+    Disasm {
+        #[arg(long)] tx: Option<String>,
+        #[arg(long)] address: Option<String>,
+        #[arg(long)] hex: Option<String>,
+        #[arg(long)] rpc: Option<String>,
+        #[arg(long)] filter: Option<String>,
+        #[arg(long)] jumptable: bool,
+        #[arg(long)] functions: bool,
+        #[arg(long)] storage_slots: bool,
+        #[arg(long)] decode_metadata: bool,
+    },
 }
 
 #[tokio::main]
@@ -38,6 +48,14 @@ async fn main() -> anyhow::Result<()> {
             commands::simulate::run(&tx, &rpc).await?,
         Commands::Mev { tx, rpc } =>
             commands::mev::run(&tx, &rpc).await?,
+        Commands::Disasm {
+            tx, address, hex, rpc, filter,
+            jumptable, functions, storage_slots, decode_metadata,
+        } =>
+            commands::disasm::run(
+                tx, address, hex, rpc, filter,
+                jumptable, functions, storage_slots, decode_metadata,
+            ).await?,
     }
     Ok(())
 }

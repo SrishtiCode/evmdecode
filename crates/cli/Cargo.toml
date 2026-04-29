@@ -15,9 +15,14 @@ evmdecode-simulator = { path = "../simulator" }
 evmdecode-gas       = { path = "../gas" }
 evmdecode-mev       = { path = "../mev" }
 evmdecode-render    = { path = "../render" }
-clap = { workspace = true }
-tokio = { workspace = true }
-anyhow = { workspace = true }
-hex = { workspace = true }
-alloy = { workspace = true }
-colored = { workspace = true }
+evmdecode-disasm    = { path = "../disasm" }
+
+clap       = { workspace = true }
+tokio      = { workspace = true }
+anyhow     = { workspace = true }
+hex        = { workspace = true }
+alloy      = { workspace = true }
+colored    = { workspace = true }
+reqwest    = { workspace = true }
+serde      = { workspace = true }
+serde_json = { workspace = true }

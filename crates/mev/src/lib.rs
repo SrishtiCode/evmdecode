@@ -1,2 +1,5 @@
-pub mod detector;
-pub mod uniswap;
+pub mod decode;
+pub mod block;
+pub mod patterns;
+
+pub use patterns::{detect, MevAlert, MevKind};

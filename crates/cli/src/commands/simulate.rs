@@ -18,7 +18,6 @@ pub async fn run(tx: &str, rpc: &str) -> anyhow::Result<()> {
 
     let calldata = hex::decode(&raw.input)?;
 
-    // decode calldata
     if calldata.len() >= 4 {
         let selector = format!("0x{}", hex::encode(&calldata[..4]));
         if let Some(sig) = lookup_4byte(&selector).await? {
@@ -28,20 +27,25 @@ pub async fn run(tx: &str, rpc: &str) -> anyhow::Result<()> {
         }
     }
 
-    // state diff
     println!("\n{}", "Fetching state diff via debug_traceTransaction...".dimmed());
-    let log_count = match trace_tx(&provider, tx).await {
+
+    let mut gas_used  = raw.gas; // fallback to gas limit
+    let mut log_count = 0usize;
+
+    match trace_tx(&provider, tx).await {
         Ok(trace) => {
             let diffs = parse_state_diff(&trace)?;
-            let count = diffs.len();
+            log_count = diffs.len();
             print_state_diffs(&diffs);
-            count
         }
         Err(_) => {
             println!("  {} debug_ unavailable, showing receipt + logs", "warn:".yellow());
             let tx_hash: TxHash = tx.parse()?;
-            let mut count = 0;
             if let Some(receipt) = provider.get_transaction_receipt(tx_hash).await? {
+                // use actual gas used, not gas limit
+                gas_used  = receipt.gas_used;
+                log_count = receipt.inner.logs().len();
+
                 println!("\n{}", "Receipt".bold().cyan());
                 println!("  status   : {}", if receipt.status() {
                     "success".green().to_string()
@@ -50,7 +54,6 @@ pub async fn run(tx: &str, rpc: &str) -> anyhow::Result<()> {
                 });
                 println!("  gas used : {}", receipt.gas_used.to_string().yellow());
 
-                count = receipt.inner.logs().len();
                 println!("\n{}", "Event Logs".bold().cyan());
                 for (i, log) in receipt.inner.logs().iter().enumerate() {
                     println!("  [{}] address : {}", i, log.address());
@@ -69,13 +72,12 @@ pub async fn run(tx: &str, rpc: &str) -> anyhow::Result<()> {
                     println!();
                 }
             }
-            count
         }
-    };
+    }
 
-    // gas breakdown — works regardless of debug_ availability
-    let cd      = compute_intrinsic(&calldata);
-    let report  = compute_breakdown(raw.gas, &calldata, log_count);
+    // gas breakdown uses actual gas_used from receipt
+    let cd     = compute_intrinsic(&calldata);
+    let report = compute_breakdown(gas_used, &calldata, log_count);
     print_gas_report(&report, cd.zero_bytes, cd.non_zero_bytes);
 
     Ok(())
