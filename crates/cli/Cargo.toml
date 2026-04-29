@@ -1,0 +1,23 @@
+[package]
+name = "evmdecode-cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "evmdecode"
+path = "src/main.rs"
+
+[dependencies]
+evmdecode-core      = { path = "../core" }
+evmdecode-rpc       = { path = "../rpc" }
+evmdecode-decoder   = { path = "../decoder" }
+evmdecode-simulator = { path = "../simulator" }
+evmdecode-gas       = { path = "../gas" }
+evmdecode-mev       = { path = "../mev" }
+evmdecode-render    = { path = "../render" }
+clap = { workspace = true }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+hex = { workspace = true }
+alloy = { workspace = true }
+colored = { workspace = true }

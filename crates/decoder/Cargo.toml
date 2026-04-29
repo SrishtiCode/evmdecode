@@ -1,0 +1,16 @@
+[package]
+name = "evmdecode-decoder"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "evmdecode_decoder"
+path = "src/lib.rs"
+
+[dependencies]
+evmdecode-core = { path = "../core" }
+alloy = { workspace = true }
+reqwest = { workspace = true }
+anyhow = { workspace = true }
+hex = { workspace = true }
+serde_json = { workspace = true }

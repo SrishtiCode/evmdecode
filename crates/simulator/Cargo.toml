@@ -1,0 +1,15 @@
+[package]
+name = "evmdecode-simulator"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "evmdecode_simulator"
+path = "src/lib.rs"
+
+[dependencies]
+evmdecode-core = { path = "../core" }
+evmdecode-rpc  = { path = "../rpc" }
+alloy          = { workspace = true }
+anyhow         = { workspace = true }
+serde_json     = { workspace = true }

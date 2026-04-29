@@ -1,0 +1,25 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/cli",
+    "crates/core",
+    "crates/rpc",
+    "crates/decoder",
+    "crates/simulator",
+    "crates/gas",
+    "crates/mev",
+    "crates/render",
+]
+
+[workspace.dependencies]
+alloy = { version = "0.3", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+anyhow = "1"
+thiserror = "1"
+clap = { version = "4", features = ["derive"] }
+hex = "0.4"
+colored = "2"
+tabled = "0.15"
