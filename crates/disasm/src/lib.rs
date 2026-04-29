@@ -68,7 +68,7 @@ pub fn disassemble(bytecode: &[u8]) -> Vec<Instruction> {
 /// Convert a hex string (`0x`-prefixed or bare) to raw bytes.
 pub fn hex_to_bytes(hex: &str) -> Result<Vec<u8>, String> {
     let hex = hex.trim().trim_start_matches("0x");
-    if hex.len() % 2 != 0 {
+    if !hex.len().is_multiple_of(2) {
         return Err(format!("odd-length hex string ({} chars)", hex.len()));
     }
     (0..hex.len())
