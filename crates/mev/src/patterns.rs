@@ -41,7 +41,7 @@ pub async fn detect(
         alerts.push(alert);
     }
 
-    let is_swap = selector.as_ref().map_or(false, |s| classify_selector(s).is_some())
+    let is_swap = selector.as_ref().is_some_and(|s| classify_selector(s).is_some())
         || !swap_logs.is_empty();
 
     if is_swap {
@@ -58,7 +58,7 @@ fn detect_swap(
     selector:  Option<&[u8; 4]>,
     to:        Option<&Address>,
 ) -> Option<MevAlert> {
-    let sel_match    = selector.and_then(|s| classify_selector(s));
+    let sel_match = selector.and_then(classify_selector);
     let router_match = to.map(is_known_router).unwrap_or(false);
     let has_swap_log = !swap_logs.is_empty();
 
